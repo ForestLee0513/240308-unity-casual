@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -19,10 +20,13 @@ public class GameManager: MonoBehaviour
     static int score;
     static GameObject[] points;
     static int totalPointCount;
-    static int disabledPointCount;
+    static int earnedPoints;
 
     // UI와 관련된 필드
-    GameObject UICavnas;
+    static TextMeshProUGUI pointText;
+    static TextMeshProUGUI scoreText;
+    static TextMeshProUGUI isFinishText;
+    static TextMeshProUGUI deathCountText;
 
     // 초기화 관련 매서드 //
     void Awake()
@@ -34,12 +38,39 @@ public class GameManager: MonoBehaviour
         }
     }
 
+    private void Init()
+    {
+        // 포인트 텍스트 있는지 확인
+        if (GameObject.Find("UICanvas/Points"))
+        {
+            pointText = GameObject.Find("UICanvas/Points").GetComponent<TextMeshProUGUI>();
+        }
+        // 점수 텍스트 있는지 확인
+        if (GameObject.Find("UICanvas/Score"))
+        {
+            scoreText = GameObject.Find("UICanvas/Score").GetComponent<TextMeshProUGUI>();
+        }
+        // 골 여부 텍스트 있는지 확인
+        if (GameObject.Find("UICanvas/isFinish"))
+        {
+            isFinishText = GameObject.Find("UICanvas/isFinish").GetComponent<TextMeshProUGUI>();
+        }
+        // 데스카운트 텍스트있는지 확인
+        if (GameObject.Find("UICanvas/deathCount"))
+        {
+            deathCountText = GameObject.Find("UICanvas/deathCount").GetComponent<TextMeshProUGUI>();
+        }
+
+        points = GameObject.FindGameObjectsWithTag("Point");
+        isFinishText.enabled = false;
+        UpdatePointCount();
+        UpdateText(scoreText, $"Score: {score}");
+        CheckIsFinish();
+    }
+
     private void Start()
     {
-        // 현재 씬의 모든 포인트 목록을 변수로 지정
-        points = GameObject.FindGameObjectsWithTag("Point");
-        UpdatePointCount();
-        Debug.Log($"{score}점");
+        Init();
     }
 
     // 게임 포인트 관련 매서드 //
@@ -48,10 +79,9 @@ public class GameManager: MonoBehaviour
     {
         totalPointCount = points.Length;
         // Count 매서드는 https://stackoverflow.com/questions/1444615/using-c-sharp-count-with-a-function 를 참고했음.
-        disabledPointCount = points.Count(point => point.activeSelf == false);
+        earnedPoints = points.Count(point => point.activeSelf == false);
 
-        Debug.Log($"총 포인트: {totalPointCount}");
-        Debug.Log($"얻은 포인트: {disabledPointCount}");
+        UpdateText(pointText, $"Point: {earnedPoints} / {totalPointCount}");
     }
     // 게임 포인트 초기화
     static public void ResetPointActive()
@@ -66,13 +96,14 @@ public class GameManager: MonoBehaviour
     // 골 관련 매서드 //
     static public bool CheckIsFinish()
     {
-        if(totalPointCount == disabledPointCount)
+        if(totalPointCount == earnedPoints)
         {
             score += 10000;
-
+            isFinishText.enabled = true;
             return true;
         }
 
+        isFinishText.enabled = false;
         return false;
     }
 
@@ -83,7 +114,18 @@ public class GameManager: MonoBehaviour
         deathCount += 1;
         score -= 10;
         ResetPointActive();
-        Debug.Log($"{deathCount}회 사망");
-        Debug.Log($"{score}점");
+        //UpdateText($"");
+        UpdateText(deathCountText,$"{deathCount}회 사망");
+        UpdateText(scoreText, $"Score: {score}");
+    }
+
+    // UI 관련 매서드 //
+    // 텍스트 갱신
+    static void UpdateText(TextMeshProUGUI textObject, string text)
+    {
+        if(textObject != null)
+        {
+            textObject.text = text;
+        }
     }
 }
