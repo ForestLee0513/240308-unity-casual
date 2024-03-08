@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    // 이동 구현
 
-    // Update is called once per frame
     void Update()
     {
-        
+        // axisRaw의 vertical과 horizon으로 x,z축 이동
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        transform.Translate(new Vector3(horizontal, 0, vertical) * Time.deltaTime);
     }
 }
