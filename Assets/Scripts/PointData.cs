@@ -11,6 +11,7 @@ public class PointData : MonoBehaviour
         if (other.tag == "Player")
         {
             gameObject.SetActive(false);
+            GameManager.UpdatePointCount();
         }
     }
 }
