@@ -39,6 +39,7 @@ public class GameManager: MonoBehaviour
         // 현재 씬의 모든 포인트 목록을 변수로 지정
         points = GameObject.FindGameObjectsWithTag("Point");
         UpdatePointCount();
+        Debug.Log(score);
     }
 
     // 게임 포인트 관련 매서드 //
@@ -58,5 +59,28 @@ public class GameManager: MonoBehaviour
         {
             point.SetActive(true);
         }
+        UpdatePointCount();
+    }
+
+    // 골 관련 매서드 //
+    static public bool CheckIsFinish()
+    {
+        if(totalPointCount == disabledPointCount)
+        {
+            score += 10000;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // 게임 규칙 관련 매서드 //
+    // 게임 사망 처리
+    static public void Dead()
+    {
+        deathCount += 1;
+        score -= 10;
+        ResetPointActive();
     }
 }
