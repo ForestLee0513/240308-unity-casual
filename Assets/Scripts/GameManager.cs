@@ -39,7 +39,7 @@ public class GameManager: MonoBehaviour
         // 현재 씬의 모든 포인트 목록을 변수로 지정
         points = GameObject.FindGameObjectsWithTag("Point");
         UpdatePointCount();
-        Debug.Log(score);
+        Debug.Log($"{score}점");
     }
 
     // 게임 포인트 관련 매서드 //
@@ -47,10 +47,11 @@ public class GameManager: MonoBehaviour
     static public void UpdatePointCount()
     {
         totalPointCount = points.Length;
+        // Count 매서드는 https://stackoverflow.com/questions/1444615/using-c-sharp-count-with-a-function 를 참고했음.
         disabledPointCount = points.Count(point => point.activeSelf == false);
 
-        Debug.Log(totalPointCount);
-        Debug.Log(disabledPointCount);
+        Debug.Log($"총 포인트: {totalPointCount}");
+        Debug.Log($"얻은 포인트: {disabledPointCount}");
     }
     // 게임 포인트 초기화
     static public void ResetPointActive()
@@ -82,5 +83,7 @@ public class GameManager: MonoBehaviour
         deathCount += 1;
         score -= 10;
         ResetPointActive();
+        Debug.Log($"{deathCount}회 사망");
+        Debug.Log($"{score}점");
     }
 }
