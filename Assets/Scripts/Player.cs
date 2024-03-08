@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        transform.Translate(new Vector3(horizontal, 0, vertical) * Time.deltaTime * 3f);
+        transform.Translate(new Vector3(horizontal, 0, vertical) * Time.deltaTime * speed);
     }
 
     private void OnCollisionExit(Collision collision)
@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Trap")
         {
             GameManager.Dead();
+            transform.position = initialPosition;
         }
     }
 }
